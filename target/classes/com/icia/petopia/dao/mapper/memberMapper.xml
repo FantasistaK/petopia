@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="mm">
+	
+	<insert id="memberjoin" parameterType="memberdto">
+		INSERT INTO PMEMBER(MID, MPASSWORD, MNAME, MPHONE, MEMAIL, MADDRESS) 
+			VALUES(#{mid}, #{mpassword}, #{mname}, #{mphone}, #{memail}, #{maddress})
+	</insert>
+	
+	<select id="idcheck" parameterType="String" resultType="String">
+		SELECT MID FROM PMEMBER WHERE MID=#{mid}
+	</select>
+	
+	<select id="memberlogin" parameterType="memberdto" resultType="String">
+		SELECT MID FROM PMEMBER WHERE MID=#{mid} AND MPASSWORD=#{mpassword}
+	</select>
+	
+	<select id="memberlist" resultType="memberdto">
+		SELECT * FROM PMEMBER ORDER BY MID ASC
+	</select>
+	
+	<select id="memberview" parameterType="String" resultType="memberdto">
+		SELECT * FROM PMEMBER WHERE MID=#{mid}
+	</select>
+	
+	<delete id="memberdelete" parameterType="memberdto">
+		DELETE FROM PMEMBER WHERE MID=#{mid}	
+	</delete>
+	
+	<select id="memberupdate" parameterType="String" resultType="memberdto">
+		SELECT * FROM PMEMBER WHERE MID=#{loginId}
+	</select> 
+	
+	<update id="memberupdateprocess" parameterType="memberdto">
+		UPDATE PMEMBER SET MPHONE=#{mphone}, MEMAIL=#{memail}, MADDRESS=#{maddress} WHERE MID=#{mid}
+	</update>
+	
+</mapper>

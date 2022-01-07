@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="rbm">
+
+	<select id="rblist" parameterType="pagedto" resultType="rbdto">
+		SELECT * FROM (SELECT B.*, ROW_NUMBER() OVER(ORDER BY RBNUMBER DESC)
+			AS RN FROM RBOARD B) WHERE RN BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	<select id="listcount" resultType="int">
+		SELECT COUNT(RBNUMBER) FROM RBOARD
+	</select>
+	
+	<insert id="rbwrite" parameterType="rbdto">
+		INSERT INTO RBOARD(RBNUMBER, RBWRITER, RBTITLE, RBADDRESS, RBCATEGORY, RBCONTENTS, RBDATE, RBHITS, RBLIKES, RBFILENAME)
+			VALUES(RBOARD_SEQ.NEXTVAL, #{rbwriter}, #{rbtitle}, #{rbaddress}, #{rbcategory}, #{rbcontents}, SYSDATE, 0, 0, #{rbfilename})
+	</insert>
+	
+	<update id="rbhits" parameterType="int">
+		UPDATE RBOARD SET RBHITS=RBHITS+1 WHERE RBNUMBER=#{rbnumber}
+	</update>
+	
+	<select id="rbview" parameterType="int" resultType="rbdto">
+		SELECT * FROM RBOARD WHERE RBNUMBER=#{rbnumber}
+	</select>
+
+	<update id="rbupdateprocess" parameterType="rbdto">
+		UPDATE RBOARD SET RBADDRESS=#{rbaddress}, RBCATEGORY=#{rbcategory}, RBTITLE=#{rbtitle}, RBCONTENTS=#{rbcontents} WHERE RBNUMBER=#{rbnumber}
+	</update>
+
+	<delete id="rbdelete" parameterType="rbdto">
+		DELETE FROM RBOARD WHERE RBNUMBER=#{rbnumber}	
+	</delete>
+	
+</mapper>

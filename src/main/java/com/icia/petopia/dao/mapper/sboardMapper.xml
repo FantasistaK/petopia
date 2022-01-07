@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="sbm">
+
+	<insert id="sbwrite" parameterType="sbdto">
+		INSERT INTO SBOARD(SBNUMBER, SBWRITER, SBTITLE, SBADDRESS, SBPRICE, SBCONTENTS, SBDATE, SBHITS, SBLIKES, SBFILENAME)
+			VALUES(SBOARD_SEQ.NEXTVAL, #{sbwriter}, #{sbtitle}, #{sbaddress}, #{sbprice}, #{sbcontents}, SYSDATE, 0, 0, #{sbfilename})
+	</insert>
+
+	<select id="sblist" parameterType="pagedto" resultType="sbdto">
+		SELECT * FROM (SELECT B.*, ROW_NUMBER() OVER(ORDER BY SBNUMBER DESC)
+			AS RN FROM SBOARD B) WHERE RN BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	<update id="sbhits" parameterType="int">
+		UPDATE SBOARD SET SBHITS=SBHITS+1 WHERE SBNUMBER=#{sbnumber}
+	</update>
+	
+	<update id="sblike" parameterType="int">
+		UPDATE SBOARD SET SBLIKES=SBLIKES+1 WHERE SBNUMBER=#{sbnumber}
+	</update>
+	
+	<select id="sbview" parameterType="int" resultType="sbdto">
+		SELECT * FROM SBOARD WHERE SBNUMBER=#{sbnumber}
+	</select>
+	
+	<select id="listcount" resultType="int">
+		SELECT COUNT(SBNUMBER) FROM SBOARD
+	</select>
+	
+	<select id="citycheck" parameterType="string" resultType="sbdto">
+		SELECT * FROM SBOARD WHERE SBADDRESS=#{add}
+	</select>
+
+</mapper>
