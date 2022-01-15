@@ -1,2 +1,0 @@
-# petopia
-first project
